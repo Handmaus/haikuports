@@ -1,0 +1,55 @@
+SUMMARY="Find and listen to internet radio stations"
+DESCRIPTION="StreamRadio helps you find and listen to internet radio streams."
+HOMEPAGE="https://github.com/HaikuArchives/StreamRadio"
+COPYRIGHT="2017 Kai Niessen
+	2018-2021 HaikuArchives team"
+LICENSE="MIT"
+REVISION="1"
+SOURCE_URI="$HOMEPAGE/archive/$portVersion.tar.gz"
+CHECKSUM_SHA256="58c5352e7949ff43490719227dd60ded4a20a665d61e55bd66256c90835fceb6"
+SOURCE_DIR="StreamRadio-$portVersion"
+
+ARCHITECTURES="all"
+
+USER_SETTINGS_FILES="
+	settings/StreamRadio.settings
+	"
+
+GLOBAL_WRITABLE_FILES="
+	settings/Stations
+	"
+
+PROVIDES="
+	streamradio = $portVersion
+	app:StreamRadio = $portVersion
+	"
+REQUIRES="
+	haiku
+	lib:libxml2
+	"
+
+BUILD_REQUIRES="
+	haiku_devel
+	devel:libxml2
+	"
+BUILD_PREREQUIRES="
+	makefile_engine
+	cmd:gcc
+	cmd:make
+	"
+
+BUILD()
+{
+	mkdir -p dist
+	cd source
+	make $jobArgs
+	make bindcatalogs
+}
+
+INSTALL()
+{
+	mkdir -p $appsDir
+	mv ./dist/StreamRadio $appsDir
+
+	addAppDeskbarSymlink $appsDir/StreamRadio
+}
